@@ -4,11 +4,6 @@
 
 #include "renderer.h"
 
-#include <iostream>
-
-#include "render_passes/present_pass.h"
-#include "render_passes/render_pass.h"
-
 Renderer::~Renderer()
 {
 	SDL_ReleaseGPUBuffer(gpu_context_->get_device(), vertex_buffer_);

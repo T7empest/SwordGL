@@ -5,7 +5,6 @@
 #pragma once
 #include <iostream>
 
-#include "render_pass.h"
 
 struct CopyPassContext
 {

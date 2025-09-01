@@ -10,6 +10,7 @@
 #include "render_passes/copy_pass.h"
 #include "render_passes/present_pass.h"
 #include "SDL3/SDL_gpu.h"
+#include <iostream>
 
 
 class Renderer

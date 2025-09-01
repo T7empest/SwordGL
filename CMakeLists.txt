@@ -11,7 +11,6 @@ add_executable(SwordGL
         src/graphics/renderer.cc
         src/graphics/renderer.h
         src/scenes/scene.h
-        src/graphics/render_passes/render_pass.h
         src/graphics/render_passes/present_pass.h
         src/graphics/render_passes/copy_pass.h
 )

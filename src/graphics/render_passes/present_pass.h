@@ -3,12 +3,17 @@
 //
 
 #pragma once
-#include "render_pass.h"
 
-class PresentPass final : public IRenderPass
+struct RenderPassContext
+{
+	SDL_GPUCommandBuffer* cmd;
+	SDL_GPUTexture* target;
+};
+
+class PresentPass
 {
 public:
-	void execute(RenderPassContext& ctx) override;
+	void execute(RenderPassContext& ctx);
 };
 
 inline void PresentPass::execute(RenderPassContext& ctx)
