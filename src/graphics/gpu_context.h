@@ -18,11 +18,12 @@ public:
 
 	void end_cmd(SDL_GPUCommandBuffer* cmd);
 
-	SDL_GPUTexture* get_swapchain_texture() const { return swapchain_texture_; }
-	SDL_GPUDevice* get_device() const { return device_; }
+	[[nodiscard]] SDL_GPUTexture* get_swapchain_texture() const { return swapchain_texture_; }
+	[[nodiscard]] SDL_GPUDevice* get_device() const { return device_; }
+	[[nodiscard]] SDL_Window* get_window() const { return window_; }
 
 private:
-	SDL_GPUDevice* create_device(SDL_GPUShaderFormat shader_format) const;
+	[[nodiscard]] SDL_GPUDevice* create_device(SDL_GPUShaderFormat shader_format) const;
 
 
 	SDL_Window*     window_;

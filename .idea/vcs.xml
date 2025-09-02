@@ -3,5 +3,13 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/dependencies/SDL" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/dependencies/SDL_shadercross" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/dependencies/SDL_shadercross/external/DirectXShaderCompiler" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/dependencies/SDL_shadercross/external/DirectXShaderCompiler/external/DirectX-Headers" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/dependencies/SDL_shadercross/external/DirectXShaderCompiler/external/SPIRV-Headers" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/dependencies/SDL_shadercross/external/DirectXShaderCompiler/external/SPIRV-Tools" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/dependencies/SDL_shadercross/external/SPIRV-Cross" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/dependencies/SDL_shadercross/external/SPIRV-Headers" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/dependencies/SDL_shadercross/external/SPIRV-Tools" vcs="Git" />
   </component>
 </project>

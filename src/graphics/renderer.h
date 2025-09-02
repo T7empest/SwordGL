@@ -12,6 +12,8 @@
 #include "SDL3/SDL_gpu.h"
 #include <iostream>
 
+#include "../../dependencies/SDL_shadercross/include/SDL3_shadercross/SDL_shadercross.h"
+
 
 class Renderer
 {
@@ -24,15 +26,22 @@ public:
 	}
 
 	~Renderer();
-	void init(SDL_GPUCommandBuffer* cmd);
-	void render(SDL_GPUCommandBuffer* cmd_buf);
+	void           init(SDL_GPUCommandBuffer* cmd);
+	void           render(SDL_GPUCommandBuffer* cmd_buf);
+	SDL_GPUShader* load_shader(const char* path, SDL_ShaderCross_ShaderStage stage);
+	void           create_pipeline();
 
 private:
-	void uploadScene(Scene::Vertex*        scene_vertices, uint32_t vertex_count,
+	void uploadScene(Scene::Vertex*        scene_vertices,
+	                 uint32_t              vertex_count,
 	                 SDL_GPUCommandBuffer* cmd);
 
 	GPUContext*                  gpu_context_;
 	std::unique_ptr<PresentPass> present_pass_;
 	std::unique_ptr<CopyPass>    copy_pass_;
-	SDL_GPUBuffer*               vertex_buffer_ = nullptr;
+	SDL_GPUBuffer*               vertex_buffer_     = nullptr;
+	uint32_t                     vertex_count_      = 0;
+	SDL_GPUShader*               vertex_shader_     = nullptr;
+	SDL_GPUShader*               fragment_shader_   = nullptr;
+	SDL_GPUGraphicsPipeline*     graphics_pipeline_ = nullptr;
 };
