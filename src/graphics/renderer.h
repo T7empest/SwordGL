@@ -28,7 +28,7 @@ public:
 	~Renderer();
 	void           init(SDL_GPUCommandBuffer* cmd);
 	void           render(SDL_GPUCommandBuffer* cmd_buf);
-	SDL_GPUShader* load_shader(const char* path, SDL_ShaderCross_ShaderStage stage);
+	SDL_GPUShader* load_shader(const char* path, SDL_ShaderCross_ShaderStage stage, uint32_t num_UBOs);
 	void           create_pipeline();
 
 private:

@@ -17,12 +17,13 @@ Renderer::~Renderer()
 void Renderer::init(SDL_GPUCommandBuffer* cmd)
 {
 	auto scene_vertices = Scene::vertices;
-	vertex_count_ = Scene::vertices.size();
+	vertex_count_       = Scene::vertices.size();
 
 	uploadScene(scene_vertices.data(), vertex_count_, cmd);
 
-	vertex_shader_   = load_shader("../res/shaders/vert.spv", SDL_SHADERCROSS_SHADERSTAGE_VERTEX);
-	fragment_shader_ = load_shader("../res/shaders/frag.spv", SDL_SHADERCROSS_SHADERSTAGE_FRAGMENT);
+	vertex_shader_ = load_shader("../res/shaders/vert.spv", SDL_SHADERCROSS_SHADERSTAGE_VERTEX, 0);
+	fragment_shader_ = load_shader("../res/shaders/frag.spv", SDL_SHADERCROSS_SHADERSTAGE_FRAGMENT,
+	                               1);
 
 	create_pipeline();
 }
@@ -42,10 +43,15 @@ void Renderer::render(SDL_GPUCommandBuffer* cmd_buf)
 		.num_instances = 1
 	};
 
+	Scene::UniformBuffer time_uniform{};
+	time_uniform.time = SDL_GetTicksNS() / 1e9f;
+	SDL_PushGPUFragmentUniformData(cmd_buf, 0, &time_uniform, sizeof(Scene::UniformBuffer));
+
 	present_pass_->execute(ctx);
 }
 
-SDL_GPUShader* Renderer::load_shader(const char* path, SDL_ShaderCross_ShaderStage stage)
+SDL_GPUShader* Renderer::load_shader(const char* path, SDL_ShaderCross_ShaderStage stage,
+                                     uint32_t    num_UBOs)
 {
 	size_t byte_size = 0;
 	void*  bytes     = SDL_LoadFile(path, &byte_size);
@@ -98,13 +104,15 @@ void Renderer::create_pipeline()
 	// blending, later need two pipelines:
 	// 1. blending off, depth-test on  == opaque pipeline
 	// 2. blending on,  depth-test off == transparent pipeline
-	color_target_descriptions[0].blend_state.enable_blend = true;
-	color_target_descriptions[0].blend_state.color_blend_op = SDL_GPU_BLENDOP_ADD;
-	color_target_descriptions[0].blend_state.alpha_blend_op = SDL_GPU_BLENDOP_ADD;
+	color_target_descriptions[0].blend_state.enable_blend          = true;
+	color_target_descriptions[0].blend_state.color_blend_op        = SDL_GPU_BLENDOP_ADD;
+	color_target_descriptions[0].blend_state.alpha_blend_op        = SDL_GPU_BLENDOP_ADD;
 	color_target_descriptions[0].blend_state.src_color_blendfactor = SDL_GPU_BLENDFACTOR_SRC_ALPHA;
-	color_target_descriptions[0].blend_state.dst_color_blendfactor = SDL_GPU_BLENDFACTOR_ONE_MINUS_SRC_ALPHA;
+	color_target_descriptions[0].blend_state.dst_color_blendfactor =
+		SDL_GPU_BLENDFACTOR_ONE_MINUS_SRC_ALPHA;
 	color_target_descriptions[0].blend_state.src_alpha_blendfactor = SDL_GPU_BLENDFACTOR_SRC_ALPHA;
-	color_target_descriptions[0].blend_state.dst_alpha_blendfactor = SDL_GPU_BLENDFACTOR_ONE_MINUS_SRC_ALPHA;
+	color_target_descriptions[0].blend_state.dst_alpha_blendfactor =
+		SDL_GPU_BLENDFACTOR_ONE_MINUS_SRC_ALPHA;
 
 	SDL_GPUGraphicsPipelineCreateInfo create_info = {
 		.vertex_shader = vertex_shader_,
