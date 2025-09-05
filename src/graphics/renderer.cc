@@ -4,18 +4,23 @@
 
 #include "renderer.h"
 
+#include "UI.h"
 #include "../../dependencies/SDL_shadercross/include/SDL3_shadercross/SDL_shadercross.h"
 #include "SDL3/SDL_log.h"
 
 Renderer::~Renderer()
 {
-	SDL_ReleaseGPUBuffer(gpu_context_->get_device(), vertex_buffer_);
 	SDL_WaitForGPUIdle(gpu_context_->get_device());
+	SDL_ReleaseGPUBuffer(gpu_context_->get_device(), vertex_buffer_);
 	SDL_ReleaseGPUGraphicsPipeline(gpu_context_->get_device(), graphics_pipeline_);
+
+	UI::instance().shutdown();
 }
 
 void Renderer::init(SDL_GPUCommandBuffer* cmd)
 {
+	UI::instance().init(gpu_context_->get_window(), gpu_context_->get_device());
+
 	auto scene_vertices = Scene::vertices;
 	vertex_count_       = Scene::vertices.size();
 
@@ -31,8 +36,9 @@ void Renderer::init(SDL_GPUCommandBuffer* cmd)
 
 void Renderer::render(SDL_GPUCommandBuffer* cmd_buf)
 {
-	auto swapchain_texture = gpu_context_->get_swapchain_texture();
+	// init the imgui frame
 
+	auto swapchain_texture = gpu_context_->get_swapchain_texture();
 
 	RenderPassContext ctx = {
 		.cmd = cmd_buf,
@@ -43,11 +49,20 @@ void Renderer::render(SDL_GPUCommandBuffer* cmd_buf)
 		.num_instances = 1
 	};
 
+	// TODO: handle unfiroms elsewhere
 	Scene::UniformBuffer time_uniform{};
 	time_uniform.time = SDL_GetTicksNS() / 1e9f;
 	SDL_PushGPUFragmentUniformData(cmd_buf, 0, &time_uniform, sizeof(Scene::UniformBuffer));
 
-	present_pass_->execute(ctx);
+	PresentPass::execute(ctx);
+
+	// imgui pass
+	ImguiPassContext imgui_ctx = {
+		.cmd = cmd_buf,
+		.target = gpu_context_->get_swapchain_texture()
+	};
+
+	UI::instance().render(imgui_ctx);
 }
 
 SDL_GPUShader* Renderer::load_shader(const char* path, SDL_ShaderCross_ShaderStage stage,
@@ -165,10 +180,8 @@ void Renderer::uploadScene(Scene::Vertex*        scene_vertices, uint32_t vertex
 		.size = vb_bytesize
 	};
 
-	copy_pass_->execute(ctx);
+	CopyPass::execute(ctx);
 
-	// TODO: Po copy_pass_->execute(ctx) musí následovat submit a fence/wait.
-	// TODO: Teprve pak SDL_ReleaseGPUTransferBuffer. Jinak riskuješ use-after-free na GPU.
-
+	SDL_WaitForGPUIdle(device);
 	SDL_ReleaseGPUTransferBuffer(device, transfer_buffer);
 }

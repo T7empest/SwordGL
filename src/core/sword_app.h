@@ -6,10 +6,10 @@
 
 #include <memory>
 #include <string>
-#include <SDL3/SDL.h>
 
 #include "../graphics/gpu_context.h"
 #include "../graphics/renderer.h"
+#include "../graphics/UI.h"
 
 constexpr uint32_t         window_start_width  = 400;
 constexpr uint32_t         window_start_height = 400;
@@ -35,5 +35,5 @@ public:
 private:
 	SDL_Window*                 window_      = nullptr;
 	std::unique_ptr<GPUContext> gpu_context_ = nullptr;
-	std::unique_ptr<Renderer>	renderer_	 = nullptr;
+	std::unique_ptr<Renderer>   renderer_    = nullptr;
 };

@@ -17,7 +17,7 @@ struct CopyPassContext
 class CopyPass
 {
 public:
-	void execute(CopyPassContext& ctx);
+	static void execute(CopyPassContext& ctx);
 };
 
 inline void CopyPass::execute(CopyPassContext& ctx)

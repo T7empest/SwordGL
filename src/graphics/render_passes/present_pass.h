@@ -17,7 +17,7 @@ struct RenderPassContext
 class PresentPass
 {
 public:
-	void execute(RenderPassContext& ctx);
+	static void execute(RenderPassContext& ctx);
 };
 
 inline void PresentPass::execute(RenderPassContext& ctx)

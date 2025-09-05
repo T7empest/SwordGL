@@ -11,20 +11,18 @@ class GPUContext
 public:
 	explicit GPUContext(SDL_Window* window);
 
-
-	~GPUContext() { SDL_DestroyGPUDevice(device_); }
+	~GPUContext() = default;
 
 	[[nodiscard]] SDL_GPUCommandBuffer* begin_cmd();
 
 	void end_cmd(SDL_GPUCommandBuffer* cmd);
 
 	[[nodiscard]] SDL_GPUTexture* get_swapchain_texture() const { return swapchain_texture_; }
-	[[nodiscard]] SDL_GPUDevice* get_device() const { return device_; }
-	[[nodiscard]] SDL_Window* get_window() const { return window_; }
+	[[nodiscard]] SDL_GPUDevice*  get_device() const { return device_; }
+	[[nodiscard]] SDL_Window*     get_window() const { return window_; }
 
 private:
 	[[nodiscard]] SDL_GPUDevice* create_device(SDL_GPUShaderFormat shader_format) const;
-
 
 	SDL_Window*     window_;
 	SDL_GPUDevice*  device_;

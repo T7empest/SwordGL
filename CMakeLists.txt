@@ -3,7 +3,6 @@ project(SwordGL)
 
 set(CMAKE_CXX_STANDARD 23)
 
-# set the output directory for built objects.
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
 
@@ -26,23 +25,40 @@ endfunction()
 glsl_to_spv(shader vert)
 glsl_to_spv(shader frag)
 
-
 add_custom_target(shaders ALL
         DEPENDS ${shader_vert_SPV} ${shader_frag_SPV})
 
+set(IMGUI_DIR ${CMAKE_SOURCE_DIR}/dependencies/imgui)
+
+set(IMGUI_SOURCES
+        ${IMGUI_DIR}/imgui.cpp
+        ${IMGUI_DIR}/imgui_draw.cpp
+        ${IMGUI_DIR}/imgui_tables.cpp
+        ${IMGUI_DIR}/imgui_widgets.cpp
+)
+
+set(IMGUI_BACKENDS
+        ${IMGUI_DIR}/backends/imgui_impl_sdl3.cpp
+        ${IMGUI_DIR}/backends/imgui_impl_sdlgpu3.cpp
+        src/graphics/UI.cc
+        src/graphics/UI.h
+        src/graphics/render_passes/imgui_pass.h
+)
+
 
 add_executable(SwordGL
-        src/graphics/renderer.cc
-        src/graphics/renderer.h
-        src/scenes/scene.h
-        src/graphics/render_passes/present_pass.h
-        src/graphics/render_passes/copy_pass.h
+        src/main.cc
+        ${IMGUI_SOURCES}
+        ${IMGUI_BACKENDS}
 )
 
 target_sources(SwordGL PRIVATE
         src/main.cc
         src/core/sword_app.cc
         src/graphics/gpu_context.cc
+        src/graphics/renderer.cc
+        # demo
+        ${IMGUI_DIR}/imgui_demo.cpp
 )
 
 set(CMAKE_OSX_DEPLOYMENT_TARGET "12.0" CACHE STRING "" FORCE)
@@ -62,6 +78,8 @@ set(SDLSHADERCROSS_CLI     OFF CACHE BOOL "" FORCE)
 add_subdirectory(dependencies/SDL_shadercross)
 
 target_include_directories(SwordGL PRIVATE
+        ${IMGUI_DIR}
+        ${IMGUI_DIR}/backends
 )
 
 target_link_directories(SwordGL PRIVATE
