@@ -43,6 +43,8 @@ set(IMGUI_BACKENDS
         src/graphics/UI.cc
         src/graphics/UI.h
         src/graphics/render_passes/imgui_pass.h
+        src/graphics/particle_system.cc
+        src/graphics/particle_system.h
 )
 
 
@@ -77,12 +79,13 @@ set(SDLSHADERCROSS_TESTS   OFF CACHE BOOL "" FORCE)
 set(SDLSHADERCROSS_CLI     OFF CACHE BOOL "" FORCE)
 add_subdirectory(dependencies/SDL_shadercross)
 
+add_subdirectory(dependencies/GLM)
+
+add_subdirectory(dependencies/SimpleECS)
+
 target_include_directories(SwordGL PRIVATE
         ${IMGUI_DIR}
         ${IMGUI_DIR}/backends
-)
-
-target_link_directories(SwordGL PRIVATE
 )
 
 set(SDLSHADERCROSS_VENDORED ON  CACHE BOOL "" FORCE)
@@ -90,6 +93,8 @@ set(SDLSHADERCROSS_VENDORED ON  CACHE BOOL "" FORCE)
 target_link_libraries(SwordGL PRIVATE
         SDL3::SDL3
         SDL3_shadercross-static
+        glm::glm
+        Simple_ECS
 )
 
 add_dependencies(SwordGL shaders)

@@ -48,8 +48,6 @@ void UI::shutdown()
 
 void UI::main_window()
 {
-	static float f       = 0.0f;
-	static int   counter = 0;
 
 	static SDL_FColor clear_color = {0.0f, 0.0f, 0.0f, 0.5f};
 	static bool show_test_window = false;
@@ -62,14 +60,8 @@ void UI::main_window()
 	// Edit bools storing our window open/close state
 	ImGui::Checkbox("Another Window", &show_test_window);
 
-	ImGui::SliderFloat("float", &f, 0.0f, 1.0f); // Edit 1 float using a slider from 0.0f to 1.0f
+	ImGui::SliderFloat("size", &size_, 0.0f, 1.0f); // Edit 1 float using a slider from 0.0f to 1.0f
 	ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
-	if (ImGui::Button("Button"))
-		// Buttons return true when clicked (most widgets return true when edited/activated)
-		counter++;
-	ImGui::SameLine();
-	ImGui::Text("counter = %d", counter);
 
 	ImGui::End();
 }

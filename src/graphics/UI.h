@@ -24,9 +24,13 @@ public:
 
 	void main_window();
 
+	[[nodiscard]] float get_size() const { return size_; }
+
 private:
-	UI()                        = default;
-	~UI()                       = default;
+	float size_ = 0.0f;
+
+	UI()                     = default;
+	~UI()                    = default;
 	UI(const UI&)            = delete;
 	UI& operator=(const UI&) = delete;
 };

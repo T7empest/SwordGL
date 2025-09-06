@@ -33,6 +33,10 @@ void Renderer::init(SDL_GPUCommandBuffer* cmd)
 	create_pipeline();
 }
 
+void Renderer::update()
+{
+}
+
 
 void Renderer::render(SDL_GPUCommandBuffer* cmd_buf)
 {

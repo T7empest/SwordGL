@@ -1,3 +1,6 @@
 [submodule "dependencies/SDL_shadercross"]
 	path = dependencies/SDL_shadercross
 	url = https://github.com/libsdl-org/SDL_shadercross
+[submodule "dependencies/GLM"]
+	path = dependencies/GLM
+	url = https://github.com/g-truc/glm.git
