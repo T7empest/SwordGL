@@ -29,6 +29,4 @@ class ParticleSystem : public System
 {
 public:
 	void emit(float dt);
-
-	std::vector<Entity> particles_ = {49999};
 };

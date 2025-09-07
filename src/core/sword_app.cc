@@ -37,20 +37,15 @@ void SwordApp::tick()
 
 bool SwordApp::handle_event(const SDL_Event& event)
 {
-	if (event.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED)
-	{
-		return false; // request to quit
-	}
+	if (event.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED) return false; // request to quit
 
-	if (UI::instance().process_event(event))
-	{
-		// don't process app events when imgui wants to
-		return true;
-	}
+	UI::instance().process_event(event);
+	if (ImGui::GetIO().WantCaptureMouse) return true;
+
 
 	// TODO: the event determining doesnt work and the emit function throws errors
 	// handle app events...
-	if (event.button.down && event.button.button == 0)
+	if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button == SDL_BUTTON_LEFT)
 	{
 		std::cout << "emitting!" << std::endl;
 		particle_system_->emit(dt_);
@@ -68,7 +63,7 @@ void SwordApp::shutdown()
 void SwordApp::calculate_dt()
 {
 	now_ns_ = SDL_GetTicksNS();
-	dt_     = static_cast<float> (now_ns_ - prev_ns_);
+	dt_     = static_cast<float>(now_ns_ - prev_ns_) * 1e-9f;
 	if (dt_ > 0.1f) dt_ = 0.1f;
 }
 

@@ -4,3 +4,6 @@
 [submodule "dependencies/GLM"]
 	path = dependencies/GLM
 	url = https://github.com/g-truc/glm.git
+[submodule "dependencies/SimpleECS"]
+	path = dependencies/SimpleECS
+	url = https://github.com/T7empest/SimpleECS

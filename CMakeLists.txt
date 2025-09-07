@@ -76,7 +76,8 @@ add_subdirectory(dependencies/SDL EXCLUDE_FROM_ALL)
 
 set(SDLSHADERCROSS_VENDORED ON  CACHE BOOL "" FORCE)
 set(SDLSHADERCROSS_TESTS   OFF CACHE BOOL "" FORCE)
-set(SDLSHADERCROSS_CLI     OFF CACHE BOOL "" FORCE)
+set(SDLSHADERCROSS_DXC OFF CACHE BOOL "" FORCE)
+set(SDLSHADERCROSS_CLI OFF CACHE BOOL "" FORCE)
 add_subdirectory(dependencies/SDL_shadercross)
 
 add_subdirectory(dependencies/GLM)

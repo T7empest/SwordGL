@@ -11,7 +11,7 @@ void ParticleSystem::emit(float dt)
 {
 	std::vector<Entity> to_remove{};
 
-	for (const auto& entity : particles_)
+	for (const auto& entity : entities_)
 	{
 		auto& rigid_body = controller.GetComponent<RigidBody>(entity);
 		auto& transform  = controller.GetComponent<Transform>(entity);
