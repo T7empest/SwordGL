@@ -7,8 +7,6 @@
 #include <cassert>
 #include <memory>
 
-ComponentController controller;
-
 void SwordApp::init(int argc, char** argv)
 {
 	if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO))
@@ -22,13 +20,15 @@ void SwordApp::init(int argc, char** argv)
 	renderer_->init(cmd);
 	gpu_context_->end_cmd(cmd);
 
-	init_particle_system();
+	particle_system_ = std::make_unique<ParticleSystem>();
 }
 
 void SwordApp::tick()
 {
 	prev_ns_ = now_ns_;
 	calculate_dt();
+
+	particle_system_->update(dt_);
 
 	SDL_GPUCommandBuffer* cmd = gpu_context_->begin_cmd();
 	renderer_->render(cmd);
@@ -37,18 +37,19 @@ void SwordApp::tick()
 
 bool SwordApp::handle_event(const SDL_Event& event)
 {
-	if (event.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED) return false; // request to quit
+	// request to quit
+	if (event.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED) return false;
 
+	// skip if ImGui wants to process this event
 	UI::instance().process_event(event);
 	if (ImGui::GetIO().WantCaptureMouse) return true;
 
-
-	// TODO: the event determining doesnt work and the emit function throws errors
-	// handle app events...
+	// handle events
 	if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button == SDL_BUTTON_LEFT)
 	{
 		std::cout << "emitting!" << std::endl;
-		particle_system_->emit(dt_);
+		auto mouse_pos = glm::vec2(event.button.x, event.button.y);
+		particle_system_->emit(dt_, mouse_pos);
 	}
 
 	return true;
@@ -79,21 +80,4 @@ void SwordApp::create_window()
 
 	if (!window_)
 		throw std::runtime_error(std::string("SDL_CreateWindow failed: ") + SDL_GetError());
-}
-
-void SwordApp::init_particle_system()
-{
-	controller.Init();
-	controller.RegisterComponent<Transform>();
-	controller.RegisterComponent<RigidBody>();
-	controller.RegisterComponent<Temporary>();
-
-	particle_system_ = controller.RegisterSystem<ParticleSystem>();
-	{
-		Signature signature;
-		signature.set(controller.GetComponentType<Transform>());
-		signature.set(controller.GetComponentType<RigidBody>());
-		signature.set(controller.GetComponentType<Temporary>());
-		controller.SetSystemSignature<ParticleSystem>(signature);
-	}
 }

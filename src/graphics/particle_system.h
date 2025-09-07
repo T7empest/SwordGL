@@ -5,28 +5,23 @@
 #pragma once
 
 #include "glm/glm.hpp"
-#include "SimpleECS.h"
 
-struct Temporary
+struct Particle
 {
-	float lifetime = 1.0f;
-};
-
-struct Transform
-{
+	float     lifetime = 1.0f;
 	glm::vec2 position;
-	glm::vec2 scale;
-};
-
-struct RigidBody
-{
+	float     scale;
 	glm::vec2 velocity;
 	glm::vec2 acceleration;
 	float     gravity;
 };
 
-class ParticleSystem : public System
+class ParticleSystem
 {
 public:
-	void emit(float dt);
+	void emit(float dt, glm::vec2 pos);
+	void update(float dt);
+
+private:
+	std::vector<Particle> particles_;
 };

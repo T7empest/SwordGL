@@ -6,7 +6,8 @@
 
 #include "UI.h"
 #include "../../dependencies/SDL_shadercross/include/SDL3_shadercross/SDL_shadercross.h"
-#include "SDL3/SDL_log.h"
+#include "render_passes/present_pass.h"
+#include "render_passes/render_passes.h"
 
 Renderer::~Renderer()
 {
@@ -31,6 +32,22 @@ void Renderer::init(SDL_GPUCommandBuffer* cmd)
 	                               1);
 
 	create_pipeline();
+
+	// particles
+	constexpr ParticleVertex quad[4] = {
+		{{-0.5f, -0.5f}, {0, 0}},
+		{{0.5f, -0.5f}, {1, 0}},
+		{{0.5f, 0.5f}, {1, 1}},
+		{{-0.5f, 0.5f}, {0, 1}},
+	};
+	const uint16_t quad_idx[6] = {0, 1, 2, 0, 2, 3};
+
+	SDL_GPUBufferCreateInfo vb_info{.usage = SDL_GPU_BUFFERUSAGE_VERTEX, .size = sizeof(quad)};
+	particle_vb_ = SDL_CreateGPUBuffer(gpu_context_->get_device(), &vb_info);
+
+	SDL_GPUBufferCreateInfo ib_info{.usage = SDL_GPU_BUFFERUSAGE_INDEX, .size = sizeof(quad_idx)};
+	particle_ib_ = SDL_CreateGPUBuffer(gpu_context_->get_device(), &ib_info);
+
 }
 
 void Renderer::update()
@@ -55,7 +72,7 @@ void Renderer::render(SDL_GPUCommandBuffer* cmd_buf)
 
 	// TODO: handle unfiroms elsewhere
 	Scene::UniformBuffer time_uniform{};
-	time_uniform.time = SDL_GetTicksNS() / 1e9f;
+	time_uniform.time = static_cast<float>(SDL_GetTicksNS()) / 1e9f;
 	SDL_PushGPUFragmentUniformData(cmd_buf, 0, &time_uniform, sizeof(Scene::UniformBuffer));
 
 	PresentPass::execute(ctx);
@@ -157,6 +174,7 @@ void Renderer::uploadScene(Scene::Vertex*        scene_vertices, uint32_t vertex
 {
 	auto vb_bytesize = static_cast<uint32_t>(vertex_count * sizeof(Scene::Vertex));
 	SDL_GPUDevice* device = gpu_context_->get_device();
+
 	SDL_GPUBufferCreateInfo buffer_info = {
 		.usage = SDL_GPU_BUFFERUSAGE_VERTEX,
 		.size = vb_bytesize
@@ -164,27 +182,14 @@ void Renderer::uploadScene(Scene::Vertex*        scene_vertices, uint32_t vertex
 
 	vertex_buffer_ = SDL_CreateGPUBuffer(device, &buffer_info);
 
-	SDL_GPUTransferBufferCreateInfo transfer_info = {
-		.usage = SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD,
-		.size = vb_bytesize
+	CopyPass::Context ctx = {
+		.dst = vertex_buffer_,
+		.dst_offset = 0,
+		.src = scene_vertices,
+		.size_bytes = vb_bytesize
 	};
 
-	SDL_GPUTransferBuffer* transfer_buffer = SDL_CreateGPUTransferBuffer(device, &transfer_info);
-
-	if (void* data = SDL_MapGPUTransferBuffer(device, transfer_buffer, false))
-	{
-		SDL_memcpy(data, scene_vertices, vb_bytesize);
-		SDL_UnmapGPUTransferBuffer(device, transfer_buffer);
-		std::cout << "copy successful" << std::endl;
-	}
-	CopyPassContext ctx = {
-		.cmd = cmd,
-		.transfer_buffer = transfer_buffer,
-		.vertex_buffer = vertex_buffer_,
-		.size = vb_bytesize
-	};
-
-	CopyPass::execute(ctx);
+	auto transfer_buffer = CopyPass::enqueue_upload(device, cmd, ctx);
 
 	SDL_WaitForGPUIdle(device);
 	SDL_ReleaseGPUTransferBuffer(device, transfer_buffer);

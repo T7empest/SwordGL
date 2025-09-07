@@ -33,7 +33,6 @@ public:
 	bool handle_event(const SDL_Event& event); // false when requesting quit
 	void shutdown();
 
-
 private:
 	SDL_Window*                 window_      = nullptr;
 	std::unique_ptr<GPUContext> gpu_context_ = nullptr;
@@ -44,8 +43,7 @@ private:
 	uint64_t now_ns_  = 0;
 	float    dt_      = 0;
 
-	std::shared_ptr<ParticleSystem> particle_system_ = nullptr;
+	std::unique_ptr<ParticleSystem> particle_system_ = nullptr;
 
 	void create_window();
-	void init_particle_system();
 };

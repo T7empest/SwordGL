@@ -45,6 +45,7 @@ set(IMGUI_BACKENDS
         src/graphics/render_passes/imgui_pass.h
         src/graphics/particle_system.cc
         src/graphics/particle_system.h
+        src/graphics/render_passes/render_passes.h
 )
 
 
@@ -82,8 +83,6 @@ add_subdirectory(dependencies/SDL_shadercross)
 
 add_subdirectory(dependencies/GLM)
 
-add_subdirectory(dependencies/SimpleECS)
-
 target_include_directories(SwordGL PRIVATE
         ${IMGUI_DIR}
         ${IMGUI_DIR}/backends
@@ -95,7 +94,6 @@ target_link_libraries(SwordGL PRIVATE
         SDL3::SDL3
         SDL3_shadercross-static
         glm::glm
-        Simple_ECS
 )
 
 add_dependencies(SwordGL shaders)

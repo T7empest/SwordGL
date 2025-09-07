@@ -5,28 +5,43 @@
 #include "particle_system.h"
 #include "../core/sword_app.h"
 
-extern ComponentController controller;
-
-void ParticleSystem::emit(float dt)
+void ParticleSystem::emit(float dt, glm::vec2 pos)
 {
-	std::vector<Entity> to_remove{};
+	Particle particle = {
+		.position = pos,
+		.scale = 2.0f,
+		.velocity = glm::vec2(2.0f, 2.0f),
+		.acceleration = glm::vec2(2.0f, 2.0f),
+		.gravity = 2.0f
+	};
+	particles_.push_back(particle);
+	std::cout << "added an entity: " << std::endl;
+	std::cout << particles_.size() << std::endl;;
+	std::cout << "X: " << particle.position.x << std::endl;
+	std::cout << "Y: " << particle.position.y << std::endl;
+}
 
-	for (const auto& entity : entities_)
+void ParticleSystem::update(float dt)
+{
+	for (size_t i = 0; i < particles_.size(); )
 	{
-		auto& rigid_body = controller.GetComponent<RigidBody>(entity);
-		auto& transform  = controller.GetComponent<Transform>(entity);
-		auto& temporary  = controller.GetComponent<Temporary>(entity);
+		auto& particle = particles_[i];
 
-		temporary.lifetime -= dt;
-		if (temporary.lifetime <= 0)
+		particle.position += particle.velocity * dt;
+		particle.lifetime -= dt;
+
+		// check lifetime
+		if (particle.lifetime <= 0.0f)
 		{
-			to_remove.push_back(entity);
+			particles_[i] = particles_.back();
+			particles_.pop_back();
+			std::cout << "removed an entity - lifetime expired" << std::endl;
 		}
-		transform.position += rigid_body.velocity * dt;
+		else
+		{
+			++i;
+		}
 	}
 
-	for (auto& entity : to_remove)
-	{
-		controller.DestroyEntity(entity);
-	}
+
 }
