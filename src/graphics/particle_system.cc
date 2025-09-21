@@ -3,15 +3,20 @@
 //
 
 #include "particle_system.h"
+
+#include <random>
+
 #include "../core/sword_app.h"
+#include "../core/utils.h"
 
 void ParticleSystem::emit(float dt, glm::vec2 pos)
 {
 	Particle particle = {
 		.position = pos,
-		.scale = 2.0f,
-		.velocity = glm::vec2(2.0f, 2.0f),
-		.acceleration = glm::vec2(2.0f, 2.0f),
+		.scale = 32.0f,
+		.color = utils::randomColor4f(),
+		.velocity = utils::randomDirection2D(20.0f),
+		.acceleration = utils::randomDirection2D(9.0f),
 		.gravity = 2.0f
 	};
 	particles_.push_back(particle);
@@ -28,6 +33,7 @@ void ParticleSystem::update(float dt)
 		auto& particle = particles_[i];
 
 		particle.position += particle.velocity * dt;
+		particle.velocity += particle.acceleration * dt;
 		particle.lifetime -= dt;
 
 		// check lifetime
@@ -42,6 +48,9 @@ void ParticleSystem::update(float dt)
 			++i;
 		}
 	}
+}
 
-
+std::vector<Particle>* ParticleSystem::get_particles()
+{
+	return &particles_;
 }

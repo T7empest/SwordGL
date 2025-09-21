@@ -20,7 +20,7 @@ void SwordApp::init(int argc, char** argv)
 	renderer_->init(cmd);
 	gpu_context_->end_cmd(cmd);
 
-	particle_system_ = std::make_unique<ParticleSystem>();
+	particle_system_ = std::make_shared<ParticleSystem>();
 }
 
 void SwordApp::tick()
@@ -30,7 +30,10 @@ void SwordApp::tick()
 
 	particle_system_->update(dt_);
 
+	// TODO: buggy
 	SDL_GPUCommandBuffer* cmd = gpu_context_->begin_cmd();
+	if (!particle_system_->get_particles()->empty())
+		renderer_->update(cmd, particle_system_);
 	renderer_->render(cmd);
 	gpu_context_->end_cmd(cmd);
 }
@@ -45,7 +48,7 @@ bool SwordApp::handle_event(const SDL_Event& event)
 	if (ImGui::GetIO().WantCaptureMouse) return true;
 
 	// handle events
-	if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button == SDL_BUTTON_LEFT)
+	if (event.type == SDL_EVENT_MOUSE_MOTION)
 	{
 		std::cout << "emitting!" << std::endl;
 		auto mouse_pos = glm::vec2(event.button.x, event.button.y);

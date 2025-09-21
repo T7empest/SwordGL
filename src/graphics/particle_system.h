@@ -10,6 +10,7 @@ struct Particle
 {
 	float     lifetime = 1.0f;
 	glm::vec2 position;
+	glm::vec4 color;
 	float     scale;
 	glm::vec2 velocity;
 	glm::vec2 acceleration;
@@ -22,6 +23,7 @@ public:
 	void emit(float dt, glm::vec2 pos);
 	void update(float dt);
 
+	std::vector<Particle>* get_particles();
 private:
 	std::vector<Particle> particles_;
 };

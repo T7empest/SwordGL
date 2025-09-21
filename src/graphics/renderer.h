@@ -10,6 +10,7 @@
 #include "SDL3/SDL_gpu.h"
 #include <iostream>
 
+#include "particle_system.h"
 #include "../../dependencies/SDL_shadercross/include/SDL3_shadercross/SDL_shadercross.h"
 #include "glm/vec2.hpp"
 #include "glm/vec4.hpp"
@@ -24,8 +25,8 @@ struct ParticleInstance
 {
 	glm::vec2 world_pos;
 	glm::vec4 color;
-	float       size;
-	float       pad;
+	float     size;
+	float     pad;
 };
 
 class Renderer
@@ -37,12 +38,13 @@ public:
 	}
 
 	~Renderer();
-	void           init(SDL_GPUCommandBuffer* cmd);
-	void           update();
-	void           render(SDL_GPUCommandBuffer* cmd_buf);
+	void init(SDL_GPUCommandBuffer* cmd);
+	void update(SDL_GPUCommandBuffer* cmd, std::shared_ptr<ParticleSystem> particle_system);
+	void render(SDL_GPUCommandBuffer* cmd_buf);
 	SDL_GPUShader* load_shader(const char* path, SDL_ShaderCross_ShaderStage stage,
-	                           uint32_t    num_UBOs);
+	                           uint32_t num_UBOs);
 	void create_pipeline();
+	void create_particle_pipeline();
 
 private:
 	void uploadScene(Scene::Vertex*        scene_vertices,
@@ -57,9 +59,12 @@ private:
 	SDL_GPUGraphicsPipeline* graphics_pipeline_ = nullptr;
 
 	// particles
-	SDL_GPUBuffer* particle_vb_   = nullptr;
-	SDL_GPUBuffer* particle_ib_   = nullptr;
-	SDL_GPUBuffer* instance_vb_   = nullptr;
-	uint32_t       max_particles_ = 10000;
-
+	SDL_GPUBuffer*           particle_vb_       = nullptr;
+	SDL_GPUBuffer*           particle_ib_       = nullptr;
+	SDL_GPUBuffer*           instance_vb_       = nullptr;
+	SDL_GPUShader*           particle_vs_       = nullptr;
+	SDL_GPUShader*           particle_fs_       = nullptr;
+	uint32_t                 max_particles_     = 10000;
+	uint32_t                 particle_count_    = 0;
+	SDL_GPUGraphicsPipeline* particle_pipeline_ = nullptr;
 };

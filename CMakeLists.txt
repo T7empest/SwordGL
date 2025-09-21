@@ -13,20 +13,25 @@ file(MAKE_DIRECTORY ${SHADER_BIN})
 
 function(glsl_to_spv NAME STAGE) # STAGE=vert|frag|comp
     set(IN_GLSL ${SHADER_SRC}/${NAME}.${STAGE})
-    set(OUT_SPV ${SHADER_BIN}/${STAGE}.spv)
+    set(OUT_SPV ${SHADER_BIN}/${NAME}.${STAGE}.spv)  # <-- změna
     add_custom_command(
             OUTPUT ${OUT_SPV}
             COMMAND ${GLSLC} -fshader-stage=${STAGE} -O -o ${OUT_SPV} ${IN_GLSL}
             DEPENDS ${IN_GLSL}
-            COMMENT "GLSL -> SPIR-V: ${NAME}.${STAGE}")
+            COMMENT "GLSL -> SPIR-V: ${NAME}.${STAGE}"
+            VERBATIM
+    )
     set(${NAME}_${STAGE}_SPV ${OUT_SPV} PARENT_SCOPE)
 endfunction()
 
-glsl_to_spv(shader vert)
-glsl_to_spv(shader frag)
+glsl_to_spv(shader   vert)
+glsl_to_spv(shader   frag)
+glsl_to_spv(particle vert)
+glsl_to_spv(particle frag)
 
 add_custom_target(shaders ALL
-        DEPENDS ${shader_vert_SPV} ${shader_frag_SPV})
+        DEPENDS ${shader_vert_SPV} ${shader_frag_SPV}
+        ${particle_vert_SPV} ${particle_frag_SPV})
 
 set(IMGUI_DIR ${CMAKE_SOURCE_DIR}/dependencies/imgui)
 
@@ -45,7 +50,8 @@ set(IMGUI_BACKENDS
         src/graphics/render_passes/imgui_pass.h
         src/graphics/particle_system.cc
         src/graphics/particle_system.h
-        src/graphics/render_passes/render_passes.h
+        src/graphics/render_passes/copy_pass.h
+        src/core/utils.h
 )
 
 
@@ -75,8 +81,8 @@ set(SDL_GPU ON CACHE BOOL "" FORCE)
 set(SDL_METAL ON CACHE BOOL "" FORCE)
 add_subdirectory(dependencies/SDL EXCLUDE_FROM_ALL)
 
-set(SDLSHADERCROSS_VENDORED ON  CACHE BOOL "" FORCE)
-set(SDLSHADERCROSS_TESTS   OFF CACHE BOOL "" FORCE)
+set(SDLSHADERCROSS_VENDORED ON CACHE BOOL "" FORCE)
+set(SDLSHADERCROSS_TESTS OFF CACHE BOOL "" FORCE)
 set(SDLSHADERCROSS_DXC OFF CACHE BOOL "" FORCE)
 set(SDLSHADERCROSS_CLI OFF CACHE BOOL "" FORCE)
 add_subdirectory(dependencies/SDL_shadercross)
@@ -88,7 +94,7 @@ target_include_directories(SwordGL PRIVATE
         ${IMGUI_DIR}/backends
 )
 
-set(SDLSHADERCROSS_VENDORED ON  CACHE BOOL "" FORCE)
+set(SDLSHADERCROSS_VENDORED ON CACHE BOOL "" FORCE)
 
 target_link_libraries(SwordGL PRIVATE
         SDL3::SDL3

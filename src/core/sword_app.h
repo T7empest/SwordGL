@@ -43,7 +43,7 @@ private:
 	uint64_t now_ns_  = 0;
 	float    dt_      = 0;
 
-	std::unique_ptr<ParticleSystem> particle_system_ = nullptr;
+	std::shared_ptr<ParticleSystem> particle_system_ = nullptr;
 
 	void create_window();
 };
