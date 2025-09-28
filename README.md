@@ -4,7 +4,7 @@ A tiny playground for **instanced particles** on **SDL3 GPU** with **soft AA edg
 **Study project:** kept small so you can tweak shaders fast.
 
 ---
-<img width="793" height="794" alt="image" src="https://github.com/user-attachments/assets/74272a20-5fb7-4e58-bb13-a0d98808761c" />
+<img width="1519" height="1020" alt="image" src="https://github.com/user-attachments/assets/c9a92929-4dda-4688-b45b-b87bc894785e" />
 
 ## Features
 - Instanced rendering: one quad + per-instance data (`world_pos`, `size` in px, `color`, `age01`).
