@@ -7,7 +7,7 @@
 #include <iostream>
 #include <memory>
 
-#include "UI.h"
+#include "graphics/UI.h"
 #include "imgui_impl_sdlgpu3.h"
 #include "SDL3/SDL_gpu.h"
 

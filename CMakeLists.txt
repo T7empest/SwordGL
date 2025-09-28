@@ -92,6 +92,8 @@ add_subdirectory(dependencies/GLM)
 target_include_directories(SwordGL PRIVATE
         ${IMGUI_DIR}
         ${IMGUI_DIR}/backends
+        ${CMAKE_SOURCE_DIR}/src
+        ${CMAKE_SOURCE_DIR}/dependencies
 )
 
 set(SDLSHADERCROSS_VENDORED ON CACHE BOOL "" FORCE)

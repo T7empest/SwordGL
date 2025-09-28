@@ -8,7 +8,7 @@
 
 struct Particle
 {
-	float     lifetime = 1.0f;
+	float     lifetime;
 	glm::vec2 position;
 	glm::vec4 color;
 	float     scale;

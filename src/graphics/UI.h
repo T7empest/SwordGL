@@ -5,7 +5,6 @@
 #pragma once
 #include "render_passes/imgui_pass.h"
 #include "SDL3/SDL.h"
-#include <UI.h>
 
 class UI
 {

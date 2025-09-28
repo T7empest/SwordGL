@@ -2,7 +2,7 @@
 // Created by Lukáš Blažek on 31.08.2025.
 //
 
-#include "gpu_context.h"
+#include "graphics/gpu_context.h"
 
 #include <iostream>
 #include <string>

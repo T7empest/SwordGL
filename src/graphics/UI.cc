@@ -2,7 +2,7 @@
 // Created by Lukáš Blažek on 05.09.2025.
 //
 
-#include "UI.h"
+#include "graphics/UI.h"
 
 #include "imgui_impl_sdl3.h"
 
@@ -52,7 +52,7 @@ void UI::main_window()
 	static SDL_FColor clear_color = {0.0f, 0.0f, 0.0f, 0.5f};
 	static bool show_test_window = false;
 
-	ImGui::Begin("Hello, world!"); // Create a window called "Hello, world!" and append into it.
+	ImGui::Begin("todo: configurable params of particles"); // Create a window called "Hello, world!" and append into it.
 
 	ImGui::Text("This is some useful text.");
 	// Display some text (you can use a format strings too)

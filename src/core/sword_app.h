@@ -7,10 +7,10 @@
 #include <memory>
 #include <string>
 
-#include "../graphics/gpu_context.h"
-#include "../graphics/particle_system.h"
-#include "../graphics/renderer.h"
-#include "../graphics/UI.h"
+#include "graphics/gpu_context.h"
+#include "graphics/particle_system.h"
+#include "graphics/renderer.h"
+#include "graphics/UI.h"
 
 constexpr uint32_t         window_start_width  = 800;
 constexpr uint32_t         window_start_height = 800;

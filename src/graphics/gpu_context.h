@@ -29,6 +29,10 @@ private:
 	SDL_GPUTexture* swapchain_texture_;
 
 	// constant
+#ifdef __APPLE__
 	const SDL_GPUShaderFormat shader_format_ = SDL_GPU_SHADERFORMAT_MSL;
+#else
+        const SDL_GPUShaderFormat shader_format_ = SDL_GPU_SHADERFORMAT_SPIRV;
+#endif
 	const char*               graphics_api_  = nullptr; // nullptr = automatic by SDL
 };
