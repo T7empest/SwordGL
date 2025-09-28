@@ -4,3 +4,6 @@
 [submodule "dependencies/GLM"]
 	path = dependencies/GLM
 	url = https://github.com/g-truc/glm.git
+[submodule "dependencies/SDL"]
+	path = dependencies/SDL
+	url = https://github.com/libsdl-org/SDL.git
